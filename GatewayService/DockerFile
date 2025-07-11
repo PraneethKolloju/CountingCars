@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+WORKDIR /app
+EXPOSE 80
+
+# copy all .csproj files and restore as distinct layers.  Use the same COPY
+# for every dockerfile in the project to take advantage of Docker caching
+COPY CountingCars.sln CountingCars.sln
+COPY AuctionService/AuctionService.csproj AuctionService/AuctionService.csproj
+COPY searchservice/searchservice.csproj searchservice/searchservice.csproj
+COPY GatewayService/GatewayService.csproj GatewayService/GatewayService.csproj
+COPY IdentityService/IdentityService.csproj IdentityService/IdentityService.csproj
+COPY Contracts/Contracts.csproj Contracts/Contracts.csproj
+
+# Restore package deps
+RUN dotnet restore CountingCars.sln
+
+# Copy the app folders over
+COPY . .
+RUN dotnet publish ./GatewayService/GatewayService.csproj -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+EXPOSE 80
+COPY --from=build /app/publish .
+ENTRYPOINT [ "dotnet","GatewayService.dll" ]

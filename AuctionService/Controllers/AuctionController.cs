@@ -38,7 +38,6 @@ namespace AuctionService.Controller
             return _mapper.Map<List<AuctionDTO>>(auctions);
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AuctionDTO>> GetAuctionById(Guid id)
         {

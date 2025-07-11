@@ -1,0 +1,10 @@
+use('SearchDb')  // Replace with actual DB name
+
+db.Item.updateMany(
+    {},
+    {
+        $set: {
+            AuctionEnd: new Date("2025-07-30T00:00:00.000Z")
+        }
+    }
+)
