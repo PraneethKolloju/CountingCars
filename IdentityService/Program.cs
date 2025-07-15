@@ -18,6 +18,17 @@ try
         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", formatProvider: CultureInfo.InvariantCulture)
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
+    builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+
 
     var app = builder
         .ConfigureServices()
@@ -43,6 +54,7 @@ try
             "default-src 'self'; connect-src 'self' wss://localhost:51322");
         await next();
     });
+    app.UseCors("AllowAll");
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)

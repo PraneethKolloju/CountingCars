@@ -29,20 +29,18 @@ public static class Config
         //     ClientSecrets= new []{new Secret("NotASecret".Sha256())},
         //     AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
         //    },
-            new Client
+        new Client
             {
                 ClientId = "nextApp",
                 ClientName = "nextApp",
                 ClientSecrets = {new Secret("NotASecret".Sha256())},
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                 RequirePkce = false,
                 RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
                 AllowOfflineAccess = true,
                 AllowedScopes = {"auctionApp","openid", "profile"},
                 AccessTokenLifetime = 3600*24*30
             }
-
-
 
         };
 }

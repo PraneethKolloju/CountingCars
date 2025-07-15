@@ -1,3 +1,4 @@
+import { signIn } from '@/auth'
 import { useParamsStore } from '@/hooks/useParamsStore'
 import { Button } from 'flowbite-react'
 import { stat } from 'fs'
@@ -6,13 +7,17 @@ import React from 'react'
 type Props = {
     title?: string,
     subTitle?: string,
-    showReset?: boolean
+    showReset?: boolean,
+    showLogin?: boolean,
+    callbackUrl?: string
 }
 
 export default function EmptyFilter({
     title = "No matches for this filter",
     subTitle = "Try changing the filters",
-    showReset
+    showReset,
+    showLogin,
+    callbackUrl
 }: Props) {
     const reset = useParamsStore(state => state.reset);
     return (
@@ -22,6 +27,9 @@ export default function EmptyFilter({
             <div className='mt-3'>
                 {showReset && (
                     <Button onClick={reset}>Reset filters</Button>
+                )}
+                {showLogin && (
+                    <Button onClick={() => signIn('id-server', { redirectTo: callbackUrl })}>Login</Button>
                 )}
             </div>
         </div>
