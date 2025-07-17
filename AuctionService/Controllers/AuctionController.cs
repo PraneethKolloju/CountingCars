@@ -76,10 +76,12 @@ namespace AuctionService.Controller
         public async Task<ActionResult> UpdateAuctionData(Guid Id, UpdateAuctionDTO updateAuctionDTO)
         {
             var ExistingData = await _auctionDbcontext.Auctions.Include(i => i.Item).FirstOrDefaultAsync(x => x.Id == Id);
-            ExistingData.Seller = User.Identity.Name;
             if (ExistingData == null)
                 return NotFound();
 
+            if (ExistingData.Seller != User.Identity?.Name) return Forbid();
+
+            ExistingData.Seller = User.Identity.Name;
             ExistingData.Item.Make = updateAuctionDTO.Make ?? ExistingData.Item.Make;
             ExistingData.Item.Model = updateAuctionDTO.Model ?? ExistingData.Item.Model;
             ExistingData.Item.Mileage = updateAuctionDTO.Mileage ?? ExistingData.Item.Mileage;

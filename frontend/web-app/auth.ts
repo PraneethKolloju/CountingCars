@@ -11,9 +11,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         DuendeIDS6Provider({
             id: 'id-server',
             clientId: "nextApp",
+            clientSecret: "NotASecret",
             issuer: "http://localhost:5000",
             authorization: { params: { scope: 'auctionApp openid profile' } },
-            idToken: true
+            idToken: true,
+            userinfo: true
         } as OIDCConfig<Omit<Profile, 'username'>>),
     ],
     callbacks: {
@@ -21,9 +23,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return !!auth
         },
         async jwt({ token, profile, account }) {
+            // console.log("Account:", account);
+            // console.log("Profile:", profile);
+            // console.log("Token:", token);
+
             if (account && account.access_token) {
                 token.accessToken = account.access_token
             }
+
             if (profile) {
                 token.username = profile.username
             }

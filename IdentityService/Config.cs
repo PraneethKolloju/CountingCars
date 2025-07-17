@@ -29,18 +29,25 @@ public static class Config
         //     ClientSecrets= new []{new Secret("NotASecret".Sha256())},
         //     AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
         //    },
-        new Client
+            new Client
             {
                 ClientId = "nextApp",
                 ClientName = "nextApp",
-                ClientSecrets = {new Secret("NotASecret".Sha256())},
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
-                RequirePkce = false,
-                RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
-                AllowOfflineAccess = true,
-                AllowedScopes = {"auctionApp","openid", "profile"},
-                AccessTokenLifetime = 3600*24*30
-            }
 
+                ClientSecrets = { new Secret("NotASecret".Sha256()) },
+
+                // ✅ Allow both grant types
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials
+                    .Union(GrantTypes.Code).ToList(),
+
+                RequirePkce = true, // Needed for Next.js (PKCE)
+                RequireClientSecret = true, // Needed for Postman (ROPC)
+
+                RedirectUris = { "http://localhost:3000/api/auth/callback/id-server" },
+                AllowOfflineAccess = true, // Enable refresh tokens
+
+                AllowedScopes = { "auctionApp", "openid", "profile" },
+                AccessTokenLifetime = 3600 * 24 * 30
+            }
         };
 }

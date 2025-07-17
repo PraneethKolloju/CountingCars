@@ -1,8 +1,8 @@
+'use client'
 import { signIn } from '@/auth'
 import { useParamsStore } from '@/hooks/useParamsStore'
 import { Button } from 'flowbite-react'
-import { stat } from 'fs'
-import React from 'react'
+
 
 type Props = {
     title?: string,
